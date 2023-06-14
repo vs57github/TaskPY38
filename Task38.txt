@@ -1,0 +1,52 @@
+import csv
+
+class Phonebook:
+    def __init__(self):
+        self.contacts = []
+
+    def add_contact(self, last_name, first_name, middle_name, phone_number):
+        self.contacts.append({'last_name': last_name, 'first_name': first_name, 'middle_name': middle_name, 'phone_number': phone_number})
+
+    def search_contact(self, search_key):
+        results = []
+        for contact in self.contacts:
+            if search_key in contact.values():
+                results.append(contact)
+        return results
+
+    def delete_contact(self, contact):
+        self.contacts.remove(contact)
+
+    def export_to_file(self, filename):
+        with open(filename, 'w', newline='') as file:
+            writer = csv.writer(file, delimiter='\t')
+            writer.writerow(['Last Name', 'First Name', 'Middle Name', 'Phone Number'])
+            for contact in self.contacts:
+                writer.writerow([contact['last_name'], contact['first_name'], contact['middle_name'], contact['phone_number']])
+
+    def import_from_file(self, filename):
+        with open(filename, 'r') as file:
+            reader = csv.reader(file, delimiter='\t')
+            next(reader) # skip header row
+            for row in reader:
+                self.add_contact(row[0], row[1], row[2], row[3])
+
+phonebook = Phonebook()
+
+# add some contacts
+phonebook.add_contact('Ivanov', 'Ivan', 'Ivanovich', '123-45-67')
+phonebook.add_contact('Petrov', 'Petr', 'Petrovich', '987-65-43')
+phonebook.add_contact('Sidorov', 'Sidor', 'Sidorovich', '555-55-55')
+
+# export to file
+phonebook.export_to_file('phonebook.txt')
+
+# import from file
+phonebook.import_from_file('phonebook.txt')
+
+# search for a contact
+results = phonebook.search_contact('Ivan')
+print(results)
+
+# delete a contact
+phonebook.delete_contact(results[0])
